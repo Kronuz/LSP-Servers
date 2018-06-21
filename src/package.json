@@ -1,0 +1,29 @@
+{
+  "name": "vendor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --verbose --progress",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^10.3.4",
+    "hexer": "^1.5.0",
+    "intelephense-server": "^0.8.8",
+    "javascript-typescript-langserver": "file:javascript-typescript-langserver",
+    "markdown-language-server": "0.0.1",
+    "shebang-loader": "0.0.1",
+    "tslint": "file:tslint",
+    "tslint-language-service": "file:tslint-language-service",
+    "typescript": "^2.9.2",
+    "vscode-css-languageserver": "file:vscode-css-languageserver",
+    "vscode-json-languageserver": "^1.0.1",
+    "webpack": "^4.12.0",
+    "webpack-cli": "^3.0.8",
+    "yaml-language-server": "0.0.14"
+  },
+  "dependencies": {}
+}

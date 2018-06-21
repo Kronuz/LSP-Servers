@@ -1,0 +1,18 @@
+[submodule "src/javascript-typescript-langserver"]
+	path = src/javascript-typescript-langserver
+	url = https://github.com/Kronuz/javascript-typescript-langserver.git
+[submodule "src/python-language-server"]
+	path = src/python-language-server
+	url = https://github.com/Kronuz/python-language-server.git
+[submodule "src/vscode-css-languageserver"]
+	path = src/vscode-css-languageserver
+	url = https://github.com/Kronuz/vscode-css-languageserver.git
+[submodule "src/tslint"]
+	path = src/tslint
+	url = https://github.com/Kronuz/tslint.git
+[submodule "src/tslint-language-service"]
+	path = src/tslint-language-service
+	url = https://github.com/Kronuz/tslint-language-service.git
+[submodule "src/eclipse.jdt.ls"]
+	path = src/eclipse.jdt.ls
+	url = https://github.com/eclipse/eclipse.jdt.ls.git
