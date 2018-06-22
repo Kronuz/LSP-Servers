@@ -33,15 +33,22 @@ pip3 install python-language-server -t dist/python
 pip3 install pyflakes -t dist/python
 pip3 install rope -t dist/python
 pip3 install autopep8 -t dist/python
-# pip3 install pyls-mypy -t dist/python
 
-pip install future -t dist/python/compat
-pip install configparser -t dist/python/compat
-rm -rf dist/python/compat/future
-rm -rf dist/python/compat/future-*
-rm -rf dist/python/compat/libfuturize
-rm -rf dist/python/compat/libpasteurize
-rm -rf dist/python/compat/past
+pip3 install pyls-mypy -t dist/python/py3
+pip3 install typeshed -t dist/python/py3
+for f in dist/python/*; do rm -rf dist/python/py3/$(basename $f); done
+for platform in manylinux1_i686 manylinux1_x86_64 win32 win_amd64 macosx_10_11_x86_64; do
+	for version in 33 34 35 36; do
+		pip3 download --only-binary=:all: --implementation cp --python-version $version --platform $platform --abi cp${version}m typed-ast
+	done
+done
+for wheel in *.whl; do
+	unzip -n $wheel -d dist/python/py3
+done
+
+pip install future -t dist/python/py2
+pip install configparser -t dist/python/py2
+for f in dist/python/*; do rm -rf dist/python/py2/$(basename $f); done
 
 rm -rf dist/python/pyls
 ln -fs ../../python-language-server/pyls dist/python

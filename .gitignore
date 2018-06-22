@@ -6,3 +6,4 @@
 
 *.pyc
 *.tar.gz
+*.whl
