@@ -15,6 +15,12 @@ tsc
 mv node_modules \~node_modules
 cd ..
 
+cd tslint-language-service
+npm install
+tsc
+mv node_modules \~node_modules
+cd ..
+
 cd vscode-css-languageserver
 npm install
 tsc
