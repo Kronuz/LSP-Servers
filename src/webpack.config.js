@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const Template = require("webpack/lib/Template");
 const intersect = require("webpack/lib/util/SetHelpers").intersect;
 const ContextModule = require("webpack/lib/ContextModule");
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 
 // Monkey-patch getSourceForEmptyContext so it does do a require()
@@ -226,6 +227,15 @@ function language(name, entry) {
     ],
     optimization: {
       // minimize: false,
+      minimizer: [
+        new UglifyJsPlugin({
+            uglifyOptions: {
+                output: {
+                    preserve_line: true
+                }
+            }
+        }),
+      ]
       // splitChunks: {
       //   chunks: 'all',
       // },
