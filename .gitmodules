@@ -16,3 +16,9 @@
 [submodule "src/eclipse.jdt.ls"]
 	path = src/eclipse.jdt.ls
 	url = https://github.com/eclipse/eclipse.jdt.ls.git
+[submodule "src/mypy"]
+	path = src/mypy
+	url = https://github.com/Kronuz/mypy.git
+[submodule "src/pyls-mypy"]
+	path = src/pyls-mypy
+	url = https://github.com/Kronuz/pyls-mypy.git

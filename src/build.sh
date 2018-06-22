@@ -50,8 +50,15 @@ pip install future -t dist/python/py2
 pip install configparser -t dist/python/py2
 for f in dist/python/*; do rm -rf dist/python/py2/$(basename $f); done
 
+rm -rf dist/python/py3/mypy
+ln -fs ../../../mypy/mypy dist/python/py3
+
+rm -rf dist/python/py3/pyls_mypy
+ln -fs ../../../pyls-mypy/pyls_mypy dist/python/py3
+
 rm -rf dist/python/pyls
 ln -fs ../../python-language-server/pyls dist/python
+
 ln -fs ../../pyls.py dist/python
 
 ########################################################################
