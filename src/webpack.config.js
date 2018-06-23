@@ -255,4 +255,5 @@ module.exports = [
   language('LSP-HTML', {"html-languageserver": "vscode-html-languageserver/out/htmlServerMain"}),
   language('LSP-JSON', {"vscode-json-languageserver": "vscode-json-languageserver/out/jsonServerMain.js"}),
   language('LSP-YAML', {"yaml-language-server": "yaml-language-server/out/server/src/server.js"}),
+  language('LSP-OCaml', {"ocaml-language-server": "ocaml-language-server/bin/server/index.js"}),
 ];

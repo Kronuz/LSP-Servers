@@ -15,6 +15,7 @@
     "intelephense-server": "^0.8.8",
     "javascript-typescript-langserver": "file:javascript-typescript-langserver",
     "markdown-language-server": "0.0.1",
+    "ocaml-language-server": "^1.0.35",
     "shebang-loader": "0.0.1",
     "source-map-support": "^0.5.6",
     "tslint": "file:tslint",
