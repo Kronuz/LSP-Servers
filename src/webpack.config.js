@@ -229,9 +229,13 @@ function language(name, entry) {
       // minimize: false,
       minimizer: [
         new UglifyJsPlugin({
+            cache: true,
+            parallel: true,
             uglifyOptions: {
                 output: {
-                    preserve_line: true
+                  beautify: true,
+                  semicolons: false,
+                  indent_level: 0
                 }
             }
         }),
