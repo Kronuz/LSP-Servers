@@ -31,7 +31,7 @@ default_config = ClientConfig(
     scopes=["source.php", "embedding.php"],
     syntaxes=["php"],
     languageId="php",
-    enabled=False,
+    enabled=True,
     init_options={
         "storagePath": "/tmp/.lsp/intelephense"
     },

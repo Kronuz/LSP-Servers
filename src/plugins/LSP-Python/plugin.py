@@ -33,7 +33,7 @@ default_config = ClientConfig(
     scopes=["source.python"],
     syntaxes=["python"],
     languageId="python",
-    enabled=False,
+    enabled=True,
     init_options={},
     settings={
         "pyls": {

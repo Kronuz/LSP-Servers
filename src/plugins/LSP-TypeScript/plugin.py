@@ -33,7 +33,7 @@ default_config = ClientConfig(
     scopes=["source.ts", "source.tsx", "source.js", "source.jsx"],
     syntaxes=["typescript", "javascript"],
     languageId="typescript",
-    enabled=False,
+    enabled=True,
     init_options={},
     settings={
     "globalPlugins": [
