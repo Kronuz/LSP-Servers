@@ -27,7 +27,7 @@ default_config = ClientConfig(
         "-jar",
         os.path.join(server_path, "plugins", "org.eclipse.equinox.launcher.jar"),
         "-configuration",
-        os.path.join(server_path, "config_%s" % platform),
+        os.path.join(server_path, "config_%s" % sublime.platform()),
     ],
     tcp_port=None,
     scopes=["source.java"],

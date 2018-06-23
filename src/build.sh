@@ -30,7 +30,7 @@ cd ..
 npm install
 npm run build
 
-cp node_modules/typescript/lib/lib.*.ts dist/typescript/server
+cp node_modules/typescript/lib/lib.*.ts dist/LSP-TypeScript/server
 
 ########################################################################
 # Python LS
@@ -42,32 +42,32 @@ for platform in manylinux1_i686 manylinux1_x86_64 win32 win_amd64 macosx_10_11_x
 	done
 done
 
-pip3 install python-language-server -t dist/python/server
-pip3 install pyflakes -t dist/python/server
-pip3 install rope -t dist/python/server
-pip3 install autopep8 -t dist/python/server
+pip3 install python-language-server -t dist/LSP-Python/server
+pip3 install pyflakes -t dist/LSP-Python/server
+pip3 install rope -t dist/LSP-Python/server
+pip3 install autopep8 -t dist/LSP-Python/server
 
-pip3 install pyls-mypy -t dist/python/server/py3
-pip3 install typeshed -t dist/python/server/py3
-for f in dist/python/server/*; do rm -rf dist/python/server/py3/$(basename $f); done
+pip3 install pyls-mypy -t dist/LSP-Python/server/py3
+pip3 install typeshed -t dist/LSP-Python/server/py3
+for f in dist/LSP-Python/server/*; do rm -rf dist/LSP-Python/server/py3/$(basename $f); done
 for wheel in *.whl; do
-	unzip -n $wheel -d dist/python/server/py3
+	unzip -n $wheel -d dist/LSP-Python/server/py3
 done
 
-pip install future -t dist/python/server/py2
-pip install configparser -t dist/python/server/py2
-for f in dist/python/server/*; do rm -rf dist/python/server/py2/$(basename $f); done
+pip install future -t dist/LSP-Python/server/py2
+pip install configparser -t dist/LSP-Python/server/py2
+for f in dist/LSP-Python/server/*; do rm -rf dist/LSP-Python/server/py2/$(basename $f); done
 
-rm -rf dist/python/server/py3/mypy
-ln -fs ../../../../mypy/mypy dist/python/server/py3
+rm -rf dist/LSP-Python/server/py3/mypy
+ln -fs ../../../../mypy/mypy dist/LSP-Python/server/py3
 
-rm -rf dist/python/server/py3/pyls_mypy
-ln -fs ../../../../pyls-mypy/pyls_mypy dist/python/server/py3
+rm -rf dist/LSP-Python/server/py3/pyls_mypy
+ln -fs ../../../../pyls-mypy/pyls_mypy dist/LSP-Python/server/py3
 
-rm -rf dist/python/server/pyls
-ln -fs ../../../python-language-server/pyls dist/python/server
+rm -rf dist/LSP-Python/server/pyls
+ln -fs ../../../python-language-server/pyls dist/LSP-Python/server
 
-ln -fs ../../../pyls.py dist/python/server
+ln -fs ../../../pyls.py dist/LSP-Python/server
 
 ########################################################################
 # Java LS
@@ -76,12 +76,11 @@ ln -fs ../../../pyls.py dist/python/server
 # download dependencies:
 curl -LO http://ftp.jaist.ac.jp/pub/eclipse/jdtls/milestones/0.21.0/jdt-language-server-0.21.0-201806152234.tar.gz
 
-mkdir -p dist/java/server
-cd dist/java/server
+mkdir -p dist/LSP-Java/server
+cd dist/LSP-Java/server
 tar xzf ../../../jdt-language-server-*.tar.gz
-mv -f config_mac config_OSX
-mv -f config_linux config_Linux
-mv -f config_win config_Windows
+mv -f config_mac config_osx
+mv -f config_win config_windows
 cd plugins
 ln -fs org.eclipse.equinox.launcher_*.jar org.eclipse.equinox.launcher.jar
 cd ../../../..
@@ -91,8 +90,8 @@ cd ../../../..
 # cd eclipse.jdt.ls
 # ./mvnw clean verify
 # cd ..
-# mkdir -p dist/java/server
-# cd dist/java/server
+# mkdir -p dist/LSP-Java/server
+# cd dist/LSP-Java/server
 # ln -fs ../../../eclipse.jdt.ls/org.eclipse.jdt.ls.product/target/repository/config_mac config_OSX
 # ln -fs ../../../eclipse.jdt.ls/org.eclipse.jdt.ls.product/target/repository/config_linux config_Linux
 # ln -fs ../../../eclipse.jdt.ls/org.eclipse.jdt.ls.product/target/repository/config_win config_Windows
@@ -103,10 +102,10 @@ cd ../../../..
 
 ########################################################################
 # Scala LS
-./coursier fetch --cache dist/scala/server -p ch.epfl.lamp:dotty-language-server_0.8:0.8.0
-ln -fs ../../../coursier dist/scala/server/coursier
+./coursier fetch --cache dist/LSP-Scala/server -p ch.epfl.lamp:dotty-language-server_0.8:0.8.0
+ln -fs ../../../coursier dist/LSP-Scala/server/coursier
 
-# java -jar dist/scala/server/coursier launch --cache dist/scala/server ch.epfl.lamp:dotty-language-server_0.8:0.8.0 -M dotty.tools.languageserver.Main -- -stdio  # <- starts server
+# java -jar dist/LSP-Scala/server/coursier launch --cache dist/LSP-Scala/server ch.epfl.lamp:dotty-language-server_0.8:0.8.0 -M dotty.tools.languageserver.Main -- -stdio  # <- starts server
 
 
 # External Servers:
@@ -143,4 +142,4 @@ for plugin in dist/*; do
 	fi
 done
 
-noglob rsync --exclude .git --exclude '*.tar.gz' --exclude '*.pyc' --exclude '__pycache__' --exclude 'bin' -av --delete --copy-links dist/ ../../servers
+noglob rsync --exclude .git --exclude '*.tar.gz' --exclude '*.pyc' --exclude '__pycache__' --exclude 'bin' -av --delete --copy-links dist/ ../servers
