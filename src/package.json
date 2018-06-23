@@ -16,6 +16,7 @@
     "javascript-typescript-langserver": "file:javascript-typescript-langserver",
     "markdown-language-server": "0.0.1",
     "shebang-loader": "0.0.1",
+    "source-map-support": "^0.5.6",
     "tslint": "file:tslint",
     "tslint-language-service": "file:tslint-language-service",
     "typescript": "^2.9.2",
