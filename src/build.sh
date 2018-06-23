@@ -138,6 +138,7 @@ for plugin in dist/*; do
 	if [ -d plugins/$plugin ]; then
 		cd dist/$plugin
 		ln -fs ../../plugins/$plugin/* .
+		ln -fs ../../plugins/$plugin/.* .
 		cd ../..
 	fi
 done
