@@ -1,0 +1,9 @@
+.DS_Store
+
+/src/workspace
+/src/node_modules
+/src/dist
+
+*.pyc
+*.tar.gz
+*.whl
