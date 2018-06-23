@@ -22,3 +22,6 @@
 [submodule "src/pyls-mypy"]
 	path = src/pyls-mypy
 	url = https://github.com/Kronuz/pyls-mypy.git
+[submodule "src/vscode-html-languageserver"]
+	path = src/vscode-html-languageserver
+	url = https://github.com/vscode-langservers/vscode-html-languageserver.git

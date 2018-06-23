@@ -252,6 +252,7 @@ module.exports = [
   language('LSP-PHP', {"intelephense-server": "intelephense-server"}),
   language('LSP-Markdown', {"markdown-language-server": "markdown-language-server/dist/src/main.js"}),
   language('LSP-CSS', {"css-languageserver": "vscode-css-languageserver/out/cssServerMain"}),
+  language('LSP-HTML', {"html-languageserver": "vscode-html-languageserver/out/htmlServerMain"}),
   language('LSP-JSON', {"vscode-json-languageserver": "vscode-json-languageserver/out/jsonServerMain.js"}),
   language('LSP-YAML', {"yaml-language-server": "yaml-language-server/out/server/src/server.js"}),
 ];

@@ -21,6 +21,7 @@
     "tslint-language-service": "file:tslint-language-service",
     "typescript": "^2.9.2",
     "vscode-css-languageserver": "file:vscode-css-languageserver",
+    "vscode-html-languageserver": "file:vscode-html-languageserver",
     "vscode-json-languageserver": "^1.0.1",
     "webpack": "^4.12.0",
     "webpack-cli": "^3.0.8",

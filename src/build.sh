@@ -6,25 +6,31 @@
 cd tslint
 npm install
 tsc -p src
-mv node_modules \~node_modules
+rm -rf node_modules
 cd ..
 
 cd javascript-typescript-langserver
 npm install
 tsc
-mv node_modules \~node_modules
+rm -rf node_modules
 cd ..
 
 cd tslint-language-service
 npm install
 tsc
-mv node_modules \~node_modules
+rm -rf node_modules
 cd ..
 
 cd vscode-css-languageserver
 npm install
 tsc
-mv node_modules \~node_modules
+rm -rf node_modules
+cd ..
+
+cd vscode-html-languageserver
+npm install
+tsc
+rm -rf node_modules
 cd ..
 
 npm install
