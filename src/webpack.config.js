@@ -209,7 +209,7 @@ function language(name, entry) {
       __filename: false,
     },
     output: {
-      path: path.join(__dirname, 'dist', name),
+      path: path.join(__dirname, 'dist', name, 'server'),
       libraryTarget: "commonjs2",
     },
     entry: entry,

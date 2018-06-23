@@ -30,78 +30,83 @@ cd ..
 npm install
 npm run build
 
-cp node_modules/typescript/lib/lib.*.ts dist/typescript
+cp node_modules/typescript/lib/lib.*.ts dist/typescript/server
 
 ########################################################################
 # Python LS
 
-pip3 install python-language-server -t dist/python
-pip3 install pyflakes -t dist/python
-pip3 install rope -t dist/python
-pip3 install autopep8 -t dist/python
-
-pip3 install pyls-mypy -t dist/python/py3
-pip3 install typeshed -t dist/python/py3
-for f in dist/python/*; do rm -rf dist/python/py3/$(basename $f); done
+# download dependencies:
 for platform in manylinux1_i686 manylinux1_x86_64 win32 win_amd64 macosx_10_11_x86_64; do
 	for version in 33 34 35 36; do
 		pip3 download --only-binary=:all: --implementation cp --python-version $version --platform $platform --abi cp${version}m typed-ast
 	done
 done
+
+pip3 install python-language-server -t dist/python/server
+pip3 install pyflakes -t dist/python/server
+pip3 install rope -t dist/python/server
+pip3 install autopep8 -t dist/python/server
+
+pip3 install pyls-mypy -t dist/python/server/py3
+pip3 install typeshed -t dist/python/server/py3
+for f in dist/python/server/*; do rm -rf dist/python/server/py3/$(basename $f); done
 for wheel in *.whl; do
-	unzip -n $wheel -d dist/python/py3
+	unzip -n $wheel -d dist/python/server/py3
 done
 
-pip install future -t dist/python/py2
-pip install configparser -t dist/python/py2
-for f in dist/python/*; do rm -rf dist/python/py2/$(basename $f); done
+pip install future -t dist/python/server/py2
+pip install configparser -t dist/python/server/py2
+for f in dist/python/server/*; do rm -rf dist/python/server/py2/$(basename $f); done
 
-rm -rf dist/python/py3/mypy
-ln -fs ../../../mypy/mypy dist/python/py3
+rm -rf dist/python/server/py3/mypy
+ln -fs ../../../../mypy/mypy dist/python/server/py3
 
-rm -rf dist/python/py3/pyls_mypy
-ln -fs ../../../pyls-mypy/pyls_mypy dist/python/py3
+rm -rf dist/python/server/py3/pyls_mypy
+ln -fs ../../../../pyls-mypy/pyls_mypy dist/python/server/py3
 
-rm -rf dist/python/pyls
-ln -fs ../../python-language-server/pyls dist/python
+rm -rf dist/python/server/pyls
+ln -fs ../../../python-language-server/pyls dist/python/server
 
-ln -fs ../../pyls.py dist/python
+ln -fs ../../../pyls.py dist/python/server
 
 ########################################################################
 # Java LS
 # Download milestone from http://download.eclipse.org/jdtls/milestones/
 
-mkdir -p dist/java
-cd dist/java
+# download dependencies:
 curl -LO http://ftp.jaist.ac.jp/pub/eclipse/jdtls/milestones/0.21.0/jdt-language-server-0.21.0-201806152234.tar.gz
-tar xzf jdt-language-server-*.tar.gz
+
+mkdir -p dist/java/server
+cd dist/java/server
+tar xzf ../../../jdt-language-server-*.tar.gz
 mv -f config_mac config_OSX
 mv -f config_linux config_Linux
 mv -f config_win config_Windows
 cd plugins
 ln -fs org.eclipse.equinox.launcher_*.jar org.eclipse.equinox.launcher.jar
-cd ../../..
+cd ../../../..
 
 # Or build from sources:
 
 # cd eclipse.jdt.ls
 # ./mvnw clean verify
 # cd ..
-# mkdir -p dist/java
-# cd dist/java
-# ln -fs ../../eclipse.jdt.ls/org.eclipse.jdt.ls.product/target/repository/config_mac config_OSX
-# ln -fs ../../eclipse.jdt.ls/org.eclipse.jdt.ls.product/target/repository/config_linux config_Linux
-# ln -fs ../../eclipse.jdt.ls/org.eclipse.jdt.ls.product/target/repository/config_win config_Windows
-# ln -fs ../../eclipse.jdt.ls/org.eclipse.jdt.ls.product/target/repository/plugins
+# mkdir -p dist/java/server
+# cd dist/java/server
+# ln -fs ../../../eclipse.jdt.ls/org.eclipse.jdt.ls.product/target/repository/config_mac config_OSX
+# ln -fs ../../../eclipse.jdt.ls/org.eclipse.jdt.ls.product/target/repository/config_linux config_Linux
+# ln -fs ../../../eclipse.jdt.ls/org.eclipse.jdt.ls.product/target/repository/config_win config_Windows
+# ln -fs ../../../eclipse.jdt.ls/org.eclipse.jdt.ls.product/target/repository/plugins
 # cd plugins
 # ln -fs org.eclipse.equinox.launcher_*.jar org.eclipse.equinox.launcher.jar
 # cd ../../..
 
 ########################################################################
 # Scala LS
-./coursier fetch --cache dist/scala -p ch.epfl.lamp:dotty-language-server_0.8:0.8.0
-ln -fs ../../coursier dist/scala/coursier
-# java -jar dist/scala/coursier launch --cache dist/scala ch.epfl.lamp:dotty-language-server_0.8:0.8.0 -M dotty.tools.languageserver.Main -- -stdio  # <- starts server
+./coursier fetch --cache dist/scala/server -p ch.epfl.lamp:dotty-language-server_0.8:0.8.0
+ln -fs ../../../coursier dist/scala/server/coursier
+
+# java -jar dist/scala/server/coursier launch --cache dist/scala/server ch.epfl.lamp:dotty-language-server_0.8:0.8.0 -M dotty.tools.languageserver.Main -- -stdio  # <- starts server
 
 
 # External Servers:
@@ -128,4 +133,14 @@ brew install r
 # R --quiet --slave -e languageserver::run()  # <- starts server
 
 ########################################################################
-noglob rsync --exclude .git --exclude '*.tar.gz' --exclude '*.pyc' --exclude '__pycache__' --exclude 'bin' -av --delete --copy-links dist/ ../servers
+# Add plugins and rsync
+for plugin in dist/*; do
+	plugin=$(basename $plugin)
+	if [ -d plugins/$plugin ]; then
+		cd dist/$plugin
+		ln -fs ../../plugins/$plugin/* .
+		cd ../..
+	fi
+done
+
+noglob rsync --exclude .git --exclude '*.tar.gz' --exclude '*.pyc' --exclude '__pycache__' --exclude 'bin' -av --delete --copy-links dist/ ../../servers
