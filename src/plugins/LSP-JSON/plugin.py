@@ -18,30 +18,35 @@ def node_is_installed():
     return shutil.which(node_command()) is not None
 
 
-server_name = "JSON Language Server"
-default_name = "json"
-default_config = ClientConfig(
-    name=default_name,
-    binary_args=[
-        node_command(),
-        os.path.join(server_path, "vscode-json-languageserver.js"),
-        "--stdio"
-    ],
-    tcp_port=None,
-    scopes=["source.json", "source.json.sublime"],
-    syntaxes=["json", "sublime text"],
-    languageId="jsonc",  # FIXME: json/jsonc
-    enabled=True,
-    init_options={},
-    settings={},
-    env={},
-)
+def configure(name, scopes, syntaxes, languageId):
+    return ClientConfig(
+        name=name,
+        binary_args=[
+            node_command(),
+            os.path.join(server_path, "vscode-json-languageserver.js"),
+            "--stdio"
+        ],
+        tcp_port=None,
+        scopes=scopes,
+        syntaxes=syntaxes,
+        languageId=languageId,
+        enabled=True,
+        init_options={},
+        settings={},
+        env={},
+    )
 
 
 class LspJsonPlugin(LanguageHandler):
     def __init__(self):
-        self._name = default_name
-        self._config = default_config
+        self._name = "json"
+        self._server_name = "JSON Language Server"
+        self._config = configure(
+            self._name,
+            ["source.json"],
+            ["json"],
+            "json",
+        )
 
     @property
     def name(self) -> str:
@@ -54,7 +59,37 @@ class LspJsonPlugin(LanguageHandler):
     def on_start(self, window) -> bool:
         if not node_is_installed():
             window.status_message(
-                "{} must be installed to run {}".format(node_command()), server_name)
+                "{} must be installed to run {}".format(node_command()), self._server_name)
+            return False
+        return True
+
+    def on_initialized(self, client) -> None:
+        pass  # extra initialization here.
+
+
+class LspJsoncPlugin(LanguageHandler):
+    def __init__(self):
+        self._name = "jsonc"
+        self._server_name = "JSONc Language Server"
+        self._config = configure(
+            self._name,
+            ["source.json.sublime"],
+            ["sublime text"],
+            "jsonc",
+        )
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def config(self) -> ClientConfig:
+        return self._config
+
+    def on_start(self, window) -> bool:
+        if not node_is_installed():
+            window.status_message(
+                "{} must be installed to run {}".format(node_command()), self._server_name)
             return False
         return True
 

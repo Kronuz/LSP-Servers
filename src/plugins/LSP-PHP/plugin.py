@@ -28,7 +28,7 @@ default_config = ClientConfig(
         "--stdio"
     ],
     tcp_port=None,
-    scopes=["source.php", "text.html.basic embedding.php"],
+    scopes=["source.php", "embedding.php text.html.basic"],
     syntaxes=["php"],
     languageId="php",
     enabled=True,
