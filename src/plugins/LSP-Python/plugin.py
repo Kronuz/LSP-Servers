@@ -42,6 +42,7 @@ default_config = ClientConfig(
             ],
             "extraSysPath": [
                 "/Applications/Sublime Text.app/Contents/MacOS",
+                os.path.expanduser("~/Library/Application Support/Sublime Text 3/Packages"),
                 "/usr/local/www/dubalu/python-packages",
                 "/usr/local/www/dubalu/django-packages"
             ]
