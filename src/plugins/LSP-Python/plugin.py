@@ -19,47 +19,59 @@ def python_is_installed():
 
 
 server_name = "Python Language Server"
-default_name = "python"
-default_config = ClientConfig(
-    name=default_name,
-    binary_args=[
-        python_command(),
-        os.path.join(server_path, "pyls.py"),
-        "-v",
-        "--log-file",
-        "~/.lsp/pyls.log"
-    ],
-    tcp_port=None,
-    scopes=["source.python"],
-    syntaxes=["python"],
-    languageId="python",
-    enabled=True,
-    init_options={},
-    settings={
-        "pyls": {
-            "configurationSources": [
-                "flake8"
-            ],
-            "extraSysPath": [
-                "/Applications/Sublime Text.app/Contents/MacOS",
-                os.path.expanduser("~/Library/Application Support/Sublime Text 3/Packages"),
-                "/usr/local/www/dubalu/python-packages",
-                "/usr/local/www/dubalu/django-packages"
-            ]
+
+
+class PythonClientConfig(ClientConfig):
+    def __init__(self):
+        self.name = "python"
+        self.binary_args = [
+            python_command(),
+            os.path.join(server_path, "pyls.py"),
+            "-v",
+            "--log-file",
+            "~/.lsp/pyls.log"
+        ]
+        self.tcp_port = None
+        self.scopes = ["source.python"]
+        self.syntaxes = ["python"]
+        self.languageId = "python"
+        self.enabled = True
+        self.init_options = {}
+        self.settings = {
+            "pyls": {
+                "configurationSources": [
+                    "flake8"
+                ],
+                "extraSysPath": []
+            }
         }
-    },
-    env={},
-)
+        self.env = {}
+
+    def get_settings(self, window):
+        pyls = dict(self.settings.get("pyls", {}))
+        extraSysPath = pyls["extraSysPath"] = list(pyls.get("extraSysPath", []))
+        extraSysPath.append(os.path.dirname(sublime.executable_path()))
+        packages = window.extract_variables().get("packages")
+        if packages and packages not in extraSysPath:
+            extraSysPath.append(packages)
+        for folder in window.folders():
+            if folder not in extraSysPath:
+                extraSysPath.append(folder)
+        return {
+            "pyls": pyls
+        }
+
+    def get_language_id(self, view):
+        return self.languageId
 
 
 class LspPythonPlugin(LanguageHandler):
     def __init__(self):
-        self._name = default_name
-        self._config = default_config
+        self._config = PythonClientConfig()
 
     @property
     def name(self) -> str:
-        return self._name
+        return self._config.name
 
     @property
     def config(self) -> ClientConfig:
