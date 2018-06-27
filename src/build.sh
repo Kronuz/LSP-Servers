@@ -117,6 +117,12 @@ ln -fs ../../../coursier dist/LSP-Scala/server/coursier
 # External Servers:
 
 ########################################################################
+# Ruby LS
+
+gem install solargraph
+# solargraph socket  # <- starts server
+
+########################################################################
 # Rust LS
 brew install rustup
 export PATH="~/.cargo/bin:$PATH"
