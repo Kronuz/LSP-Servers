@@ -28,9 +28,9 @@ class LspOCamlClientConfig(ClientConfig):
         ]
         self.tcp_port = None
         self.languages = {
-            "reason": {
-                "scopes": ["source.reason", "source.ocaml"],
-                "syntaxes": ["reason"],
+            "ocaml": {
+                "scopes": ["source.ocaml", "source.reason"],
+                "syntaxes": ["ocaml", "reason"],
             },
         }
         self.enabled = True
