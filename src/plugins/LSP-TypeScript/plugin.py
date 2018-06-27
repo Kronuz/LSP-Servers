@@ -18,75 +18,45 @@ def node_is_installed():
     return shutil.which(node_command()) is not None
 
 
-def configure(name, scopes, syntaxes, languageId):
-    return ClientConfig(
-        name=name,
-        binary_args=[
+class LspTypeScriptClientConfig(ClientConfig):
+    def __init__(self):
+        self.name = "typescript"
+        self.binary_args = [
             node_command(),
             os.path.join(server_path, "javascript-typescript-langserver.js"),
             "-t",
             "--logfile",
             "~/.lsp/typescript.log"
-        ],
-        tcp_port=None,
-        scopes=scopes,
-        syntaxes=syntaxes,
-        languageId=languageId,
-        enabled=True,
-        init_options={},
-        settings={
+        ]
+        self.tcp_port = None
+        self.languages = {
+            "typescript": {
+                "scopes": ["source.ts", "source.tsx"],
+                "syntaxes": ["typescript"],
+            },
+            "javacript": {
+                "scopes": ["source.js", "source.jsx"],
+                "syntaxes": ["javacript"],
+            },
+        }
+        self.enabled = True
+        self.init_options = {}
+        self.settings = {
             "globalPlugins": [
                 "tslint-language-service.js"
             ]
-        },
-        env={},
-    )
+        }
+        self.env = {}
 
 
 class LspTypeScriptPlugin(LanguageHandler):
     def __init__(self):
-        self._name = "typescript"
         self._server_name = "TypeScript Language Server"
-        self._config = configure(
-            self._name,
-            ["source.ts", "source.tsx"],
-            ["typescript"],
-            "typescript",
-        )
+        self._config = LspTypeScriptClientConfig()
 
     @property
     def name(self) -> str:
-        return self._name
-
-    @property
-    def config(self) -> ClientConfig:
-        return self._config
-
-    def on_start(self, window) -> bool:
-        if not node_is_installed():
-            window.status_message(
-                "{} must be installed to run {}".format(node_command()), self._server_name)
-            return False
-        return True
-
-    def on_initialized(self, client) -> None:
-        pass  # extra initialization here.
-
-
-class LspJavaScriptPlugin(LanguageHandler):
-    def __init__(self):
-        self._name = "javascript"
-        self._server_name = "JavaScript Language Server"
-        self._config = configure(
-            self._name,
-            ["source.js", "source.jsx"],
-            ["javascript"],
-            "javascript",
-        )
-
-    @property
-    def name(self) -> str:
-        return self._name
+        return self._config.name
 
     @property
     def config(self) -> ClientConfig:

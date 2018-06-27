@@ -18,34 +18,35 @@ def node_is_installed():
     return shutil.which(node_command()) is not None
 
 
-server_name = "HTML Language Server"
-default_name = "html"
-default_config = ClientConfig(
-    name=default_name,
-    binary_args=[
-        node_command(),
-        os.path.join(server_path, "html-languageserver.js"),
-        "--stdio"
-    ],
-    tcp_port=None,
-    scopes=["text.html.basic"],
-    syntaxes=["html"],
-    languageId="html",
-    enabled=True,
-    init_options={},
-    settings={},
-    env={},
-)
+class LspHtmlClientConfig(ClientConfig):
+    def __init__(self):
+        self.name = "html"
+        self.binary_args = [
+            node_command(),
+            os.path.join(server_path, "html-languageserver.js"),
+            "--stdio",
+        ]
+        self.tcp_port = None
+        self.languages = {
+            "html": {
+                "scopes": ["text.html.basic"],
+                "syntaxes": ["html"],
+            },
+        }
+        self.enabled = True
+        self.init_options = {}
+        self.settings = {}
+        self.env = {}
 
 
 class LspHtmlPlugin(LanguageHandler):
     def __init__(self):
-        self._name = default_name
-        self._config = default_config
+        self._server_name = "HTML Language Server"
+        self._config = LspHtmlClientConfig()
 
     @property
     def name(self) -> str:
-        return self._name
+        return self._config.name
 
     @property
     def config(self) -> ClientConfig:
@@ -54,7 +55,7 @@ class LspHtmlPlugin(LanguageHandler):
     def on_start(self, window) -> bool:
         if not node_is_installed():
             window.status_message(
-                "{} must be installed to run {}".format(node_command()), server_name)
+                "{} must be installed to run {}".format(node_command()), self._server_name)
             return False
         return True
 

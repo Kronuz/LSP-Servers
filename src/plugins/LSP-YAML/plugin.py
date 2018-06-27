@@ -18,34 +18,35 @@ def node_is_installed():
     return shutil.which(node_command()) is not None
 
 
-server_name = "YAML Language Server"
-default_name = "yaml"
-default_config = ClientConfig(
-    name=default_name,
-    binary_args=[
-        node_command(),
-        os.path.join(server_path, "yaml-language-server.js"),
-        "--stdio"
-    ],
-    tcp_port=None,
-    scopes=["source.yaml"],
-    syntaxes=["yaml"],
-    languageId="yaml",
-    enabled=True,
-    init_options={},
-    settings={},
-    env={},
-)
+class LspYamlClientConfig(ClientConfig):
+    def __init__(self):
+        self.name = "yaml"
+        self.binary_args = [
+            node_command(),
+            os.path.join(server_path, "yaml-language-server.js"),
+            "--stdio"
+        ]
+        self.tcp_port = None
+        self.languages = {
+            "yaml": {
+                "scopes": ["source.yaml"],
+                "syntaxes": ["yaml"],
+            },
+        }
+        self.enabled = True
+        self.init_options = {}
+        self.settings = {}
+        self.env = {}
 
 
 class LspYamlPlugin(LanguageHandler):
     def __init__(self):
-        self._name = default_name
-        self._config = default_config
+        self._server_name = "YAML Language Server"
+        self._config = LspYamlClientConfig()
 
     @property
     def name(self) -> str:
-        return self._name
+        return self._config.name
 
     @property
     def config(self) -> ClientConfig:
@@ -54,7 +55,7 @@ class LspYamlPlugin(LanguageHandler):
     def on_start(self, window) -> bool:
         if not node_is_installed():
             window.status_message(
-                "{} must be installed to run {}".format(node_command()), server_name)
+                "{} must be installed to run {}".format(node_command()), self._server_name)
             return False
         return True
 

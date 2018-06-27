@@ -18,42 +18,43 @@ def java_is_installed():
     return shutil.which(java_command()) is not None
 
 
-server_name = "Scala Language Server"
-default_name = "scala"
-default_config = ClientConfig(
-    name=default_name,
-    binary_args=[
-        java_command(),
-        "-jar",
-        os.path.join(server_path, "coursier"),
-        "launch",
-        "--cache",
-        server_path,
-        "ch.epfl.lamp:dotty-language-server_0.8:0.8.0",
-        "-M",
-        "dotty.tools.languageserver.Main",
-        "--",
-        "-stdio"
-    ],
-    tcp_port=None,
-    scopes=["source.scala"],
-    syntaxes=["scala"],
-    languageId="scala",
-    enabled=True,
-    init_options={},
-    settings={},
-    env={},
-)
+class LspScalaClientConfig(ClientConfig):
+    def __init__(self):
+        self.name = "scala"
+        self.binary_args = [
+            java_command(),
+            "-jar",
+            os.path.join(server_path, "coursier"),
+            "launch",
+            "--cache",
+            server_path,
+            "ch.epfl.lamp:dotty-language-server_0.8:0.8.0",
+            "-M",
+            "dotty.tools.languageserver.Main",
+            "--",
+            "-stdio"
+        ]
+        self.tcp_port = None
+        self.languages = {
+            "scala": {
+                "scopes": ["source.scala"],
+                "syntaxes": ["scala"],
+            },
+        }
+        self.enabled = True
+        self.init_options = {}
+        self.settings = {}
+        self.env = {}
 
 
 class LspScalaPlugin(LanguageHandler):
     def __init__(self):
-        self._name = default_name
-        self._config = default_config
+        self._server_name = "Scala Language Server"
+        self._config = LspScalaClientConfig()
 
     @property
     def name(self) -> str:
-        return self._name
+        return self._config.name
 
     @property
     def config(self) -> ClientConfig:
@@ -62,7 +63,7 @@ class LspScalaPlugin(LanguageHandler):
     def on_start(self, window) -> bool:
         if not java_is_installed():
             window.status_message(
-                "{} must be installed to run {}".format(node_command()), server_name)
+                "{} must be installed to run {}".format(node_command()), self._server_name)
             return False
         return True
 

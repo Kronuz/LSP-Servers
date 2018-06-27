@@ -18,34 +18,35 @@ def node_is_installed():
     return shutil.which(node_command()) is not None
 
 
-server_name = "OCaml Language Server"
-default_name = "ocaml"
-default_config = ClientConfig(
-    name=default_name,
-    binary_args=[
-        node_command(),
-        os.path.join(server_path, "ocaml-language-server.js"),
-        "--stdio"
-    ],
-    tcp_port=None,
-    scopes=["source.reason", "source.ocaml"],
-    syntaxes=["reason"],
-    languageId="reason",
-    enabled=True,
-    init_options={},
-    settings={},
-    env={},
-)
+class LspOCamlClientConfig(ClientConfig):
+    def __init__(self):
+        self.name = "ocaml"
+        self.binary_args = [
+            node_command(),
+            os.path.join(server_path, "ocaml-language-server.js"),
+            "--stdio"
+        ]
+        self.tcp_port = None
+        self.languages = {
+            "reason": {
+                "scopes": ["source.reason", "source.ocaml"],
+                "syntaxes": ["reason"],
+            },
+        }
+        self.enabled = True
+        self.init_options = {}
+        self.settings = {}
+        self.env = {}
 
 
 class LspOCamlPlugin(LanguageHandler):
     def __init__(self):
-        self._name = default_name
-        self._config = default_config
+        self._server_name = "OCaml Language Server"
+        self._config = LspOCamlClientConfig()
 
     @property
     def name(self) -> str:
-        return self._name
+        return self._config.name
 
     @property
     def config(self) -> ClientConfig:
@@ -54,7 +55,7 @@ class LspOCamlPlugin(LanguageHandler):
     def on_start(self, window) -> bool:
         if not node_is_installed():
             window.status_message(
-                "{} must be installed to run {}".format(node_command()), server_name)
+                "{} must be installed to run {}".format(node_command()), self._server_name)
             return False
         return True
 

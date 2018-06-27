@@ -18,10 +18,7 @@ def python_is_installed():
     return shutil.which(python_command()) is not None
 
 
-server_name = "Python Language Server"
-
-
-class PythonClientConfig(ClientConfig):
+class LspPythonClientConfig(ClientConfig):
     def __init__(self):
         self.name = "python"
         self.binary_args = [
@@ -29,12 +26,15 @@ class PythonClientConfig(ClientConfig):
             os.path.join(server_path, "pyls.py"),
             "-v",
             "--log-file",
-            "~/.lsp/pyls.log"
+            "~/.lsp/pyls.log",
         ]
         self.tcp_port = None
-        self.scopes = ["source.python"]
-        self.syntaxes = ["python"]
-        self.languageId = "python"
+        self.languages = {
+            "python": {
+                "scopes": ["source.python"],
+                "syntaxes": ["python"],
+            },
+        }
         self.enabled = True
         self.init_options = {}
         self.settings = {
@@ -42,8 +42,8 @@ class PythonClientConfig(ClientConfig):
                 "configurationSources": [
                     "flake8"
                 ],
-                "extraSysPath": []
-            }
+                "extraSysPath": [],
+            },
         }
         self.env = {}
 
@@ -61,13 +61,11 @@ class PythonClientConfig(ClientConfig):
             "pyls": pyls
         }
 
-    def get_language_id(self, view):
-        return self.languageId
-
 
 class LspPythonPlugin(LanguageHandler):
     def __init__(self):
-        self._config = PythonClientConfig()
+        self._server_name = "Python Language Server"
+        self._config = LspPythonClientConfig()
 
     @property
     def name(self) -> str:
@@ -80,7 +78,7 @@ class LspPythonPlugin(LanguageHandler):
     def on_start(self, window) -> bool:
         if not python_is_installed():
             window.status_message(
-                "{} must be installed to run {}".format(node_command()), server_name)
+                "{} must be installed to run {}".format(node_command()), self._server_name)
             return False
         return True
 

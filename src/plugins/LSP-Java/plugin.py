@@ -18,36 +18,37 @@ def java_is_installed():
     return shutil.which(java_command()) is not None
 
 
-server_name = "Java Language Server"
-default_name = "java"
-default_config = ClientConfig(
-    name=default_name,
-    binary_args=[
-        java_command(),
-        "-jar",
-        os.path.join(server_path, "plugins", "org.eclipse.equinox.launcher.jar"),
-        "-configuration",
-        os.path.join(server_path, "config_%s" % sublime.platform()),
-    ],
-    tcp_port=None,
-    scopes=["source.java"],
-    syntaxes=["java"],
-    languageId="java",
-    enabled=True,
-    init_options={},
-    settings={},
-    env={},
-)
+class LspJavaClientConfig(ClientConfig):
+    def __init__(self):
+        self.name = "java"
+        self.binary_args = [
+            java_command(),
+            "-jar",
+            os.path.join(server_path, "plugins", "org.eclipse.equinox.launcher.jar"),
+            "-configuration",
+            os.path.join(server_path, "config_%s" % sublime.platform()),
+        ]
+        self.tcp_port = None
+        self.languages = {
+            "java": {
+                "scopes": ["source.java"],
+                "syntaxes": ["java"],
+            },
+        }
+        self.enabled = True
+        self.init_options = {}
+        self.settings = {}
+        self.env = {}
 
 
 class LspJavaPlugin(LanguageHandler):
     def __init__(self):
-        self._name = default_name
-        self._config = default_config
+        self._server_name = "Java Language Server"
+        self._config = LspJavaClientConfig()
 
     @property
     def name(self) -> str:
-        return self._name
+        return self._config.name
 
     @property
     def config(self) -> ClientConfig:
@@ -56,7 +57,7 @@ class LspJavaPlugin(LanguageHandler):
     def on_start(self, window) -> bool:
         if not java_is_installed():
             window.status_message(
-                "{} must be installed to run {}".format(node_command()), server_name)
+                "{} must be installed to run {}".format(node_command()), self._server_name)
             return False
         return True
 
