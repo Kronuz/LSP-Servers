@@ -293,7 +293,11 @@ class LspCppPlugin(LanguageHandler):
         return True
 
     def on_initialized(self, client) -> None:
-        pass  # extra initialization here.
+        client.on_notification("$cquery/progress", on_progress)
+
+
+def on_progress(params):
+    pass
 
 
 def plugin_loaded():
