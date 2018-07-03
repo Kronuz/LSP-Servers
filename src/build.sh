@@ -46,7 +46,7 @@ cp node_modules/eslint/lib/rules/*.js dist/LSP-Vue/server/rules
 
 # download dependencies:
 for platform in manylinux1_i686 manylinux1_x86_64 win32 win_amd64 macosx_10_11_x86_64; do
-	for version in 33 34 35 36; do
+	for version in 33 34 35 36 37; do
 		pip3 download --only-binary=:all: --implementation cp --python-version $version --platform $platform --abi cp${version}m typed-ast
 	done
 done
