@@ -38,6 +38,9 @@ npm run build
 
 cp node_modules/typescript/lib/lib.*.ts dist/LSP-TypeScript/server
 
+mkdir -p dist/LSP-Vue/server/rules
+cp node_modules/eslint/lib/rules/*.js dist/LSP-Vue/server/rules
+
 ########################################################################
 # Python LS
 

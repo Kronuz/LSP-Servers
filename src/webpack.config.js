@@ -200,7 +200,7 @@ class DependenciesLoaderPlugin {
   }
 }
 
-function language(name, entry) {
+function language(name, entry, externals) {
   return {
     mode: "production",
     target: "node",
@@ -243,7 +243,8 @@ function language(name, entry) {
       // splitChunks: {
       //   chunks: 'all',
       // },
-    }
+    },
+    externals,
   };
 }
 
@@ -256,4 +257,5 @@ module.exports = [
   language('LSP-JSON', {"vscode-json-languageserver": "vscode-json-languageserver/out/jsonServerMain.js"}),
   language('LSP-YAML', {"yaml-language-server": "yaml-language-server/out/server/src/server.js"}),
   language('LSP-OCaml', {"ocaml-language-server": "ocaml-language-server/bin/server/index.js"}),
+  language('LSP-Vue', {"vue-language-server": "vue-language-server/dist/vueServerMain.js"}, './lib-cov/stylus')
 ];
