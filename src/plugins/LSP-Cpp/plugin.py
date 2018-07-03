@@ -422,10 +422,15 @@ class LspCppPlugin(LanguageHandler):
 
     def on_initialized(self, client) -> None:
         client.on_notification("$cquery/progress", on_progress)
+        client.on_notification("textDocument/publishDiagnostics", on_diagnostics)
 
 
 def on_progress(params):
     spinner.start('fire')
+
+
+def on_diagnostics(params):
+    spinner.start('monkey')
 
 
 def plugin_loaded():
