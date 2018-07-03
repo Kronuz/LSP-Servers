@@ -68,7 +68,10 @@ class LspScalaPlugin(LanguageHandler):
         return True
 
     def on_initialized(self, client) -> None:
-        pass  # extra initialization here.
+        client.on_notification("textDocument/publishDiagnostics", self.on_diagnostics)
+
+    def on_diagnostics(self, params):
+        self.spinner.start('monkey')
 
 
 def plugin_loaded():
