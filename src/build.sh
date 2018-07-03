@@ -107,6 +107,16 @@ cd ../../../..
 # cd ../../..
 
 ########################################################################
+# C/C++/Objective-C LS (cquery)
+mkdir -p dist/LSP-Cpp
+
+# brew install --HEAD cquery
+#   or
+# git clone https://github.com/cquery-project/cquery --single-branch --depth=1
+# cd cquery
+# git submodule update --init && ./waf configure build --variant=debug  # --variant=debug if you want to report issues.
+
+########################################################################
 # Scala LS
 ./coursier fetch --cache dist/LSP-Scala/server -p ch.epfl.lamp:dotty-language-server_0.8:0.8.0
 ln -fs ../../../coursier dist/LSP-Scala/server/coursier
