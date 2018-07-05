@@ -222,7 +222,7 @@ function language(name, entry, externals) {
       ],
     },
     plugins: [
-      // new webpack.NamedModulesPlugin(),
+      new webpack.HashedModuleIdsPlugin(),  // or webpack.NamedModulesPlugin()
       new DependenciesLoaderPlugin(),
     ],
     optimization: {
@@ -232,6 +232,8 @@ function language(name, entry, externals) {
             cache: true,
             parallel: true,
             uglifyOptions: {
+                compress: false,  // slower without this
+                sourceMap: false,
                 output: {
                   beautify: true,
                   semicolons: false,
