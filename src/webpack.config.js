@@ -259,5 +259,6 @@ module.exports = [
   language('LSP-JSON', {"vscode-json-languageserver": "vscode-json-languageserver/out/jsonServerMain.js"}),
   language('LSP-YAML', {"yaml-language-server": "yaml-language-server/out/server/src/server.js"}),
   language('LSP-OCaml', {"ocaml-language-server": "ocaml-language-server/bin/server/index.js"}),
-  language('LSP-Vue', {"vue-language-server": "vue-language-server/dist/vueServerMain.js"}, './lib-cov/stylus')
+  language('LSP-Vue', {"vue-language-server": "vue-language-server/dist/vueServerMain.js"}, './lib-cov/stylus'),
+  language('LSP-Flow', {"flow-language-server": "flow-language-server/lib/bin/cli.js"}, ['axios', 'hipchat-notifier', 'loggly', 'mailgun-js', 'nodemailer', 'slack-node', 'encoding', 'original-fs', 'spawn-sync']),
 ];
