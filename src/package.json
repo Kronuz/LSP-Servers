@@ -14,7 +14,7 @@
     "flow-language-server": "^0.6.0",
     "hexer": "^1.5.0",
     "intelephense-server": "^0.8.8",
-    "javascript-typescript-langserver": "file:javascript-typescript-langserver",
+    "lsp-tsserver": "file:lsp-tsserver",
     "markdown-language-server": "0.0.1",
     "ocaml-language-server": "^1.0.35",
     "shebang-loader": "0.0.1",

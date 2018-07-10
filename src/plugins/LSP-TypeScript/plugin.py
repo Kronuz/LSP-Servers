@@ -23,10 +23,11 @@ class LspTypeScriptClientConfig(ClientConfig):
         self.name = "typescript"
         self.binary_args = [
             node_command(),
-            os.path.join(server_path, "javascript-typescript-langserver.js"),
-            "-t",
-            "--logfile",
-            "~/.lsp/typescript.log"
+            os.path.join(server_path, "lsp-tsserver", "dist", "server.js"),
+            "--globalPlugins", "tslint-language-service",
+            "--logfile", "~/.lsp/typescript.log",
+            "--logVerbosity", "terse",
+            "--traceToConsole", "true",
         ]
         self.tcp_port = None
         self.languages = {
@@ -41,11 +42,7 @@ class LspTypeScriptClientConfig(ClientConfig):
         }
         self.enabled = True
         self.init_options = {}
-        self.settings = {
-            "globalPlugins": [
-                "tslint-language-service.js"
-            ]
-        }
+        self.settings = {}
         self.env = {}
 
 

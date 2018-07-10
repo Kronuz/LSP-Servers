@@ -9,9 +9,9 @@ tsc -p src
 rm -rf node_modules
 cd ..
 
-cd javascript-typescript-langserver
+cd lsp-tsserver
 npm install
-tsc
+tsc -p .
 rm -rf node_modules
 cd ..
 
@@ -36,7 +36,7 @@ cd ..
 npm install
 npm run build
 
-cp node_modules/typescript/lib/lib.*.ts dist/LSP-TypeScript/server
+cp node_modules/typescript/lib/lib.*.ts dist/LSP-TypeScript/server/lsp-tsserver/dist
 
 mkdir -p dist/LSP-Vue/server/rules
 cp node_modules/eslint/lib/rules/*.js dist/LSP-Vue/server/rules

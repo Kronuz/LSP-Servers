@@ -1,6 +1,3 @@
-[submodule "src/javascript-typescript-langserver"]
-	path = src/javascript-typescript-langserver
-	url = https://github.com/Kronuz/javascript-typescript-langserver.git
 [submodule "src/python-language-server"]
 	path = src/python-language-server
 	url = https://github.com/Kronuz/python-language-server.git
@@ -28,3 +25,6 @@
 [submodule "lsp-tests"]
 	path = lsp-tests
 	url = https://github.com/Kronuz/lsp-tests.git
+[submodule "src/lsp-tsserver"]
+	path = src/lsp-tsserver
+	url = https://github.com/Kronuz/lsp-tsserver.git

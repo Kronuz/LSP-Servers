@@ -251,14 +251,14 @@ function language(name, entry, externals) {
 }
 
 module.exports = [
-  language('LSP-TypeScript', {"javascript-typescript-langserver": 'javascript-typescript-langserver/lib/language-server-stdio', "tslint-language-service": "tslint-language-service"}),
+  language('LSP-TypeScript', {"lsp-tsserver/dist/server": "lsp-tsserver/dist/server", "node_modules/tslint-language-service": "tslint-language-service"}),
   language('LSP-PHP', {"intelephense-server": "intelephense-server"}),
-  language('LSP-Markdown', {"markdown-language-server": "markdown-language-server/dist/src/main.js"}),
+  language('LSP-Markdown', {"markdown-language-server": "markdown-language-server/dist/src/main"}),
   language('LSP-CSS', {"css-languageserver": "vscode-css-languageserver/out/cssServerMain"}),
   language('LSP-HTML', {"html-languageserver": "vscode-html-languageserver/out/htmlServerMain"}),
-  language('LSP-JSON', {"vscode-json-languageserver": "vscode-json-languageserver/out/jsonServerMain.js"}),
-  language('LSP-YAML', {"yaml-language-server": "yaml-language-server/out/server/src/server.js"}),
-  language('LSP-OCaml', {"ocaml-language-server": "ocaml-language-server/bin/server/index.js"}),
-  language('LSP-Vue', {"vue-language-server": "vue-language-server/dist/vueServerMain.js"}, './lib-cov/stylus'),
-  // language('LSP-Flow', {"flow-language-server": "flow-language-server/lib/bin/cli.js"}, ['axios', 'hipchat-notifier', 'loggly', 'mailgun-js', 'nodemailer', 'slack-node', 'encoding', 'original-fs', 'spawn-sync']),
+  language('LSP-JSON', {"vscode-json-languageserver": "vscode-json-languageserver/out/jsonServerMain"}),
+  language('LSP-YAML', {"yaml-language-server": "yaml-language-server/out/server/src/server"}),
+  language('LSP-OCaml', {"ocaml-language-server": "ocaml-language-server/bin/server/index"}),
+  language('LSP-Vue', {"vue-language-server": "vue-language-server/dist/vueServerMain"}, './lib-cov/stylus'),
+  // language('LSP-Flow', {"flow-language-server": "flow-language-server/lib/bin/cli"}, ['axios', 'hipchat-notifier', 'loggly', 'mailgun-js', 'nodemailer', 'slack-node', 'encoding', 'original-fs', 'spawn-sync']),
 ];
