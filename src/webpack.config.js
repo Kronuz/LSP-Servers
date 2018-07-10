@@ -237,7 +237,7 @@ function language(name, entry, externals) {
                 output: {
                   beautify: true,
                   semicolons: false,
-                  indent_level: 0
+                  indent_level: 1
                 }
             }
         }),
