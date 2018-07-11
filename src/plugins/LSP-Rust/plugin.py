@@ -44,8 +44,8 @@ def exec_child_process(cmd, cwd=None, env=None):
         env=full_env,
         startupinfo=startupinfo)
     stdoutdata, stderrdata = map(lambda s: s.decode('utf-8') if isinstance(s, bytes) else s, proc.communicate())
-    print("% " + " ".join(cmd))
-    print('\n'.join(filter(None, [stdoutdata, stderrdata])))
+    # print("% " + " ".join(cmd))
+    # print('\n'.join(filter(None, [stdoutdata, stderrdata])))
     if proc.returncode:
         raise RuntimeError("{}: {}".format(proc.returncode, stderrdata))
     return stdoutdata, stderrdata
