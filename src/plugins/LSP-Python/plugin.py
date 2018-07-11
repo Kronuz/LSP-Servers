@@ -87,7 +87,7 @@ class LspPythonPlugin(LanguageHandler):
         client.on_notification("textDocument/publishDiagnostics", self.on_diagnostics)
 
     def on_diagnostics(self, params):
-        spinner.start(spinner='monkey')
+        spinner.start("LSP-Python", spinner='monkey')
 
 
 def plugin_loaded():

@@ -120,10 +120,10 @@ class LspRustPlugin(LanguageHandler):
         client.on_notification("rustDocument/diagnosticsEnd", self.on_progress)
 
     def on_diagnostics(self, params):
-        spinner.start(spinner='monkey')
+        spinner.start("LSP-Rust", spinner='monkey')
 
     def on_progress(self, params):
-        spinner.start(spinner='fire')
+        spinner.start("LSP-Rust", spinner='fire')
 
     def warn_on_missing_cargo_toml(self, window):
         for folder in window.folders():

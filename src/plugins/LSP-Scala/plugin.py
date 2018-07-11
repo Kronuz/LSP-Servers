@@ -64,7 +64,7 @@ class LspScalaPlugin(LanguageHandler):
     def on_start(self, window) -> bool:
         if not java_is_installed():
             window.status_message(
-                "{} must be installed to run {}".format(node_command()), self._server_name)
+                "{} must be installed to run {}".format(java_command()), self._server_name)
             return False
         return True
 
@@ -72,7 +72,7 @@ class LspScalaPlugin(LanguageHandler):
         client.on_notification("textDocument/publishDiagnostics", self.on_diagnostics)
 
     def on_diagnostics(self, params):
-        spinner.start(spinner='monkey')
+        spinner.start("LSP-Scala", spinner='monkey')
 
 
 def plugin_loaded():
