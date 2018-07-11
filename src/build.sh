@@ -120,6 +120,15 @@ mkdir -p dist/LSP-Cpp
 # git submodule update --init && ./waf configure build --variant=debug  # --variant=debug if you want to report issues.
 
 ########################################################################
+# Rust LS
+mkdir -p dist/LSP-Rust
+# brew install rustup
+# export PATH="~/.cargo/bin:$PATH"
+# rustup default nightly
+# rustup component add rls-preview rls-analysis rls-src
+# rustup run nightly rls  # <- starts server
+
+########################################################################
 # Scala LS
 ./coursier fetch --cache dist/LSP-Scala/server -p ch.epfl.lamp:dotty-language-server_0.8:0.8.0
 ln -fs ../../../coursier dist/LSP-Scala/server/coursier
@@ -135,13 +144,6 @@ ln -fs ../../../coursier dist/LSP-Scala/server/coursier
 gem install solargraph
 # solargraph socket  # <- starts server
 
-########################################################################
-# Rust LS
-brew install rustup
-export PATH="~/.cargo/bin:$PATH"
-rustup default nightly
-rustup component add rls-preview
-# rustup run nightly rls  # <- starts server
 
 ########################################################################
 # Go LS
