@@ -68,7 +68,7 @@ class LspCppClientConfig(ClientConfig):
             # Cache directory for indexed files.
             "cacheDirectory": os.path.expanduser("~/.lsp/cquery"),
 
-            # Cache serialization format.
+            # Cache serialization format, json by default.
             #
             # "json" generates `cacheDirectory/.../xxx.json` files which can be pretty
             # printed with jq.
@@ -78,7 +78,7 @@ class LspCppClientConfig(ClientConfig):
             # takes only 60% of the corresponding JSON size, but is difficult to inspect.
             # msgpack does not store map keys and you need to re-index whenever a struct
             # member has changed.
-            # "cacheFormat": "json",
+            "cacheFormat": "msgpack",
 
             # Value to use for clang -resource-dir if not present in
             # compile_commands.json.
