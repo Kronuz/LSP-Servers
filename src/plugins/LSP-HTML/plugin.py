@@ -5,6 +5,7 @@ import shutil
 
 from LSP.plugin.core.settings import ClientConfig
 from LSP.plugin.core.handlers import LanguageHandler
+from LSP.plugin.core.spinner import spinner
 
 package_path = os.path.dirname(__file__)
 server_path = os.path.join(package_path, 'server')
@@ -63,7 +64,7 @@ class LspHtmlPlugin(LanguageHandler):
         client.on_notification("textDocument/publishDiagnostics", self.on_diagnostics)
 
     def on_diagnostics(self, params):
-        self.spinner.start('monkey')
+        spinner.start(spinner='monkey')
 
 
 def plugin_loaded():
