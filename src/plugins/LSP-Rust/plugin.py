@@ -3,6 +3,7 @@ import sublime
 import os
 import re
 import shutil
+import threading
 import subprocess
 
 from LSP.plugin.core.settings import ClientConfig
@@ -11,6 +12,13 @@ from LSP.plugin.core.spinner import spinner
 
 package_path = os.path.dirname(__file__)
 server_path = os.path.join(package_path, 'server')
+
+STATUS_INIT = 0
+STATUS_UPDATE = 1
+STATUS_TOOLCHAIN = 2
+STATUS_ENV = 3
+STATUS_RLS = 4
+STATUS_DONE = 5
 
 
 def rustup_command():
@@ -36,9 +44,8 @@ def exec_child_process(cmd, cwd=None, env=None):
         env=full_env,
         startupinfo=startupinfo)
     stdoutdata, stderrdata = map(lambda s: s.decode('utf-8') if isinstance(s, bytes) else s, proc.communicate())
-    # print("% " + " ".join(cmd))
-    # print(stdoutdata)
-    # print(stderrdata)
+    print("% " + " ".join(cmd))
+    print('\n'.join(filter(None, [stdoutdata, stderrdata])))
     if proc.returncode:
         raise RuntimeError("{}: {}".format(proc.returncode, stderrdata))
     return stdoutdata, stderrdata
@@ -75,11 +82,14 @@ class LspRustClientConfig(ClientConfig):
         self.enabled = True
         self.init_options = {}
         self.settings = {}
-        self.env = {}
+        self.env = {
+            'PATH': os.pathsep.join(os.environ.get('PATH', "").split(os.pathsep) + [os.path.expanduser("~/.cargo/bin")])
+        }
 
 
 class LspRustPlugin(LanguageHandler):
     dialogs = True
+    status = None
 
     def __init__(self):
         self._server_name = "Rust Language Server"
@@ -94,20 +104,11 @@ class LspRustPlugin(LanguageHandler):
         return self._config
 
     def on_start(self, window) -> bool:
-        env = self.make_rls_env()
-        if not env:
-            window.status_message(
-                "{} must be installed to run {}".format(rustup_command(), self._server_name))
-            return False
-        self._config.env.update(env)
-
         self.warn_on_missing_cargo_toml(window)
         self.warn_on_rls_toml(window)
-
-        if not self.setup_rls_via_rustup(update_rustup=True):
-            return False
-
-        return True
+        if self.setup_rls_via_rustup(update_rustup=True):
+            return True
+        return False
 
     def on_initialized(self, client) -> None:
         client.on_notification("textDocument/publishDiagnostics", self.on_diagnostics)
@@ -142,8 +143,6 @@ class LspRustPlugin(LanguageHandler):
         Make an evironment to run the RLS.
         Tries to synthesise RUST_SRC_PATH for Racer, if one is not already set.
         """
-        env = {}
-        env['PATH'] = os.pathsep.join(os.environ.get('PATH', "").split(os.pathsep) + [os.path.expanduser("~/.cargo/bin")])
         try:
             stdoutdata, stderrdata = exec_child_process([
                 rustup_command(),
@@ -152,32 +151,29 @@ class LspRustPlugin(LanguageHandler):
                 "rustc",
                 "--print",
                 "sysroot",
-            ], env=env)
+            ], env=self._config.env)
         except RuntimeError:
-            print("RLS could not set RUST_SRC_PATH for Racer because it could not read the Rust sysroot.")
-            return None
-        except IOError:
-            print("Rustup not available. Install from https://www.rustup.rs/")
-            return None
+            print("LSP-Rust could not set RUST_SRC_PATH for Racer because it could not read the Rust sysroot for {}.".format(self._config.channel))
+            return False
 
         sysroot = stdoutdata.strip()
         print("Setting sysroot to '{}'".format(sysroot))
         RUST_SRC_PATH = os.environ.get('RUST_SRC_PATH')
         if RUST_SRC_PATH:
-            env['RUST_SRC_PATH'] = RUST_SRC_PATH
+            self._config.env['RUST_SRC_PATH'] = RUST_SRC_PATH
         else:
-            env['RUST_SRC_PATH'] = os.path.join(sysroot, "lib", "rustlib", "src", "rust", "src")
+            self._config.env['RUST_SRC_PATH'] = os.path.join(sysroot, "lib", "rustlib", "src", "rust", "src")
 
         if set_lib_path:
-            env['DYLD_LIBRARY_PATH'] = os.pathsep.join(os.environ.get('DYLD_LIBRARY_PATH', "").split(os.pathsep) + [os.path.join(sysroot, "lib")])
-            env['LD_LIBRARY_PATH'] = os.pathsep.join(os.environ.get('LD_LIBRARY_PATH', "").split(os.pathsep) + [os.path.join(sysroot, "lib")])
-        return env
+            self._config.env['DYLD_LIBRARY_PATH'] = os.pathsep.join(os.environ.get('DYLD_LIBRARY_PATH', "").split(os.pathsep) + [os.path.join(sysroot, "lib")])
+            self._config.env['LD_LIBRARY_PATH'] = os.pathsep.join(os.environ.get('LD_LIBRARY_PATH', "").split(os.pathsep) + [os.path.join(sysroot, "lib")])
+        return True
 
     def ensure_toolchain(self):
         if self.has_toolchain():
             return True
         if LspRustPlugin.dialogs and sublime.ok_cancel_dialog(
-            "{} toolchain not installed.\n"
+            "Rust {} toolchain not installed.\n"
             "Install now?".format(self._config.channel)
         ):
             return self.try_to_install_toolchain()
@@ -192,13 +188,13 @@ class LspRustPlugin(LanguageHandler):
                 "list",
             ], env=self._config.env)
         except RuntimeError:
-            print("Unexpected error initialising RLS - error running rustup")
+            print("Unexpected error initializing Rust Language Server: error running rustup")
             return False
 
         return self._config.channel in stdoutdata
 
     def try_to_install_toolchain(self):
-        spinner.start("LSP-Rust", "Installing toolchain…", timeout=-1)
+        spinner.start("LSP-Rust", "Installing Rust {} toolchain…".format(self._config.channel), timeout=-1)
         try:
             stdoutdata, stderrdata = exec_child_process([
                 rustup_command(),
@@ -207,17 +203,17 @@ class LspRustPlugin(LanguageHandler):
                 self._config.channel,
             ], env=self._config.env)
         except RuntimeError:
-            spinner.stop("Could not install {} toolchain".format(self._config.channel))
+            spinner.stop("Could not install Rust {} toolchain".format(self._config.channel))
             return False
 
-        spinner.stop("{} toolchain installed successfully".format(self._config.channel))
+        spinner.stop("Rust {} toolchain installed successfully".format(self._config.channel))
         return True
 
     def check_for_rls(self):
         if self.has_rls_components():
             return True
         if LspRustPlugin.dialogs and sublime.ok_cancel_dialog(
-            "RLS not installed\n"
+            "Rust Language Server not installed\n"
             "Install now?"
         ):
             return self.install_rls()
@@ -234,13 +230,13 @@ class LspRustPlugin(LanguageHandler):
                 self._config.channel,
             ], env=self._config.env)
         except RuntimeError:
-            print("Unexpected error initialising RLS - error running rustup")
+            print("Unexpected error initializing Rust Language Server - error running rustup")
             return False
 
         return (
-            re.search(r'^rust-analysis.* \((default|installed)\)$', stdoutdata, re.MULTILINE) and
-            re.search(r'^rust-src.* \((default|installed)\)$', stdoutdata, re.MULTILINE) and
-            re.search(r'^' + self._config.component_name + r'.* \((default|installed)\)$', stdoutdata, re.MULTILINE)
+            re.search(r'^rust-analysis.* \((?:default|installed)\)$', stdoutdata, re.MULTILINE) and
+            re.search(r'^rust-src.* \((?:default|installed)\)$', stdoutdata, re.MULTILINE) and
+            re.search(r'^' + self._config.component_name + r'.* \((?:default|installed)\)$', stdoutdata, re.MULTILINE)
         )
 
     def install_component(self, component):
@@ -258,21 +254,16 @@ class LspRustPlugin(LanguageHandler):
         return True
 
     def install_rls(self):
-        spinner.start("LSP-Rust", "Installing components…", timeout=-1)
-        if not self.install_component('rust-analysis'):
-            spinner.stop("Could not install RLS: rust-analysis")
-            return False
-        if not self.install_component('rust-src'):
-            spinner.stop("Could not install RLS: rust-src")
-            return False
-        if not self.install_component(self._config.component_name):
-            spinner.stop("Could not install RLS: {}".format(self._config.component_name))
-            return False
-        spinner.stop("RLS components installed successfully")
+        for component_name in ('rust-analysis', 'rust-src', self._config.component_name):
+            spinner.start("LSP-Rust", "Installing {} Rust component…".format(component_name), timeout=-1)
+            if not self.install_component(component_name):
+                spinner.stop("Could not install Rust component {}".format(component_name))
+                return False
+        spinner.stop("Rust components installed successfully")
         return True
 
     def rustup_update(self):
-        spinner.start("LSP-Rust", "Updating…", timeout=-1)
+        spinner.start("LSP-Rust", "Updating Rustup…", timeout=-1)
         try:
             stdoutdata, stderrdata = exec_child_process([
                 rustup_command(),
@@ -292,21 +283,39 @@ class LspRustPlugin(LanguageHandler):
         return True
 
     def setup_rls_via_rustup(self, update_rustup=False):
-        try:
-            if update_rustup:
-                if not self.rustup_update():
-                    print("Could not update Rustup")
-            if not self.ensure_toolchain():
-                print("Could not start RLS: toolchain")
-                return False
-            if not self.check_for_rls():
-                print("Could not start RLS: rls")
-                return False
-            return True
-        except IOError:
-            print("Rustup not available. Install from https://www.rustup.rs/")
-        except Exception as err:
-            print("Failed to run command:", err)
+        def _setup_rls_via_rustup():
+            try:
+                LspRustPlugin.status = STATUS_UPDATE
+                if update_rustup:
+                    if not self.rustup_update():
+                        print("Could not update Rustup")
+                LspRustPlugin.status = STATUS_TOOLCHAIN
+                if not self.ensure_toolchain():
+                    print("Could not start Rust Language Server: toolchain")
+                    LspRustPlugin.status = None
+                    return False
+                LspRustPlugin.status = STATUS_ENV
+                if not self.make_rls_env():
+                    print("Could not start Rust Language Server: environment")
+                    LspRustPlugin.status = None
+                    return False
+                LspRustPlugin.status = STATUS_RLS
+                if not self.check_for_rls():
+                    print("Could not start Rust Language Server: rls")
+                    LspRustPlugin.status = None
+                    return False
+                LspRustPlugin.status = STATUS_DONE
+                return True
+            except IOError:
+                print("Rustup not available. Install from https://www.rustup.rs/")
+            except Exception as err:
+                print("Failed to run command:", err)
+            LspRustPlugin.status = None
+
+        if LspRustPlugin.status is None:
+            LspRustPlugin.status = STATUS_INIT
+            threading.Thread(target=_setup_rls_via_rustup).start()
+        return self.has_toolchain() and self.has_rls_components()
 
 
 def plugin_loaded():
