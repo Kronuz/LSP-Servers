@@ -21,6 +21,12 @@ tsc
 rm -rf node_modules
 cd ..
 
+cd eslint-language-service
+npm install
+tsc
+rm -rf node_modules
+cd ..
+
 cd vscode-css-languageserver
 npm install
 tsc
@@ -40,6 +46,9 @@ cp node_modules/typescript/lib/lib.*.ts dist/LSP-TypeScript/server/lsp-tsserver/
 
 mkdir -p dist/LSP-Vue/server/rules
 cp node_modules/eslint/lib/rules/*.js dist/LSP-Vue/server/rules
+
+mkdir -p dist/LSP-TypeScript/server/node_modules/rules
+cp node_modules/eslint/lib/rules/*.js dist/LSP-TypeScript/server/node_modules/rules
 
 ########################################################################
 # Python LS

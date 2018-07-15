@@ -11,6 +11,8 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^10.3.4",
+    "eslint": "^5.1.0",
+    "eslint-language-service": "file:eslint-language-service",
     "flow-language-server": "^0.6.0",
     "hexer": "^1.5.0",
     "intelephense-server": "^0.8.8",

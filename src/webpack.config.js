@@ -241,7 +241,7 @@ function language(name, entry, externals) {
                 }
             }
         }),
-      ]
+      ],
       // splitChunks: {
       //   chunks: 'all',
       // },
@@ -251,7 +251,8 @@ function language(name, entry, externals) {
 }
 
 module.exports = [
-  language('LSP-TypeScript', {"lsp-tsserver/dist/server": "lsp-tsserver/dist/server", "node_modules/tslint-language-service": "tslint-language-service"}),
+  language('LSP-TypeScript', {"lsp-tsserver/dist/server": "lsp-tsserver/dist/server", "node_modules/tslint-language-service": "tslint-language-service", "node_modules/eslint-language-service": "eslint-language-service"}, ['eslint', 'tslint']),
+  language('LSP-TypeScript', {"node_modules/eslint": "eslint", "node_modules/tslint": "tslint"}),
   language('LSP-PHP', {"intelephense-server": "intelephense-server"}),
   language('LSP-Markdown', {"markdown-language-server": "markdown-language-server/dist/src/main"}),
   language('LSP-CSS', {"css-languageserver": "vscode-css-languageserver/out/cssServerMain"}),

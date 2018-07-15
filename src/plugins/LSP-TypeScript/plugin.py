@@ -25,7 +25,7 @@ class LspTypeScriptClientConfig(ClientConfig):
         self.binary_args = [
             node_command(),
             os.path.join(server_path, "lsp-tsserver", "dist", "server.js"),
-            "--globalPlugins", "tslint-language-service",
+            "--globalPlugins", "tslint-language-service,eslint-language-service,",
             "--logfile", "~/.lsp/typescript.log",
             "--logVerbosity", "terse",
             "--traceToConsole", "true",
