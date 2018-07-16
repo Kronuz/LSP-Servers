@@ -5,19 +5,19 @@
 
 cd lsp-tsserver
 mv .node_modules node_modules || npm install
-tsc -p .
+$(npm bin)/tsc -p .
 mv node_modules .node_modules
 cd ..
 
 cd tslint
 mv .node_modules node_modules || npm install
-tsc -p src
+$(npm bin)/tsc -p src
 mv node_modules .node_modules
 cd ..
 
 cd tslint-language-service
 mv .node_modules node_modules || npm install
-tsc
+$(npm bin)/tsc
 mv node_modules .node_modules
 cd ..
 
@@ -27,19 +27,19 @@ cd ..
 
 cd eslint-language-service
 mv .node_modules node_modules || npm install
-tsc
+$(npm bin)/tsc
 mv node_modules .node_modules
 cd ..
 
 cd vscode-css-languageserver
 mv .node_modules node_modules || npm install
-tsc
+$(npm bin)/tsc
 mv node_modules .node_modules
 cd ..
 
 cd vscode-html-languageserver
 mv .node_modules node_modules || npm install
-tsc
+$(npm bin)/tsc
 mv node_modules .node_modules
 cd ..
 
