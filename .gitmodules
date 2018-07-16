@@ -28,3 +28,6 @@
 [submodule "src/lsp-tsserver"]
 	path = src/lsp-tsserver
 	url = https://github.com/Kronuz/lsp-tsserver.git
+[submodule "src/eslint"]
+	path = src/eslint
+	url = https://github.com/Kronuz/eslint.git

@@ -3,40 +3,44 @@
 ########################################################################
 # JavaScript/TypeScript/CSS/YAML/PHP/etc LS
 
-cd tslint
-npm install
-tsc -p src
-rm -rf node_modules
+cd lsp-tsserver
+mv .node_modules node_modules || npm install
+tsc -p .
+mv node_modules .node_modules
 cd ..
 
-cd lsp-tsserver
-npm install
-tsc -p .
-rm -rf node_modules
+cd tslint
+mv .node_modules node_modules || npm install
+tsc -p src
+mv node_modules .node_modules
 cd ..
 
 cd tslint-language-service
-npm install
+mv .node_modules node_modules || npm install
 tsc
-rm -rf node_modules
+mv node_modules .node_modules
+cd ..
+
+cd eslint
+# nothing to build here
 cd ..
 
 cd eslint-language-service
-npm install
+mv .node_modules node_modules || npm install
 tsc
-rm -rf node_modules
+mv node_modules .node_modules
 cd ..
 
 cd vscode-css-languageserver
-npm install
+mv .node_modules node_modules || npm install
 tsc
-rm -rf node_modules
+mv node_modules .node_modules
 cd ..
 
 cd vscode-html-languageserver
-npm install
+mv .node_modules node_modules || npm install
 tsc
-rm -rf node_modules
+mv node_modules .node_modules
 cd ..
 
 npm install
@@ -44,11 +48,6 @@ npm run build
 
 cp node_modules/typescript/lib/lib.*.ts dist/LSP-TypeScript/server/lsp-tsserver/dist
 
-mkdir -p dist/LSP-Vue/server/rules
-cp node_modules/eslint/lib/rules/*.js dist/LSP-Vue/server/rules
-
-mkdir -p dist/LSP-TypeScript/server/node_modules/rules
-cp node_modules/eslint/lib/rules/*.js dist/LSP-TypeScript/server/node_modules/rules
 
 ########################################################################
 # Python LS
