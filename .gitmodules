@@ -31,3 +31,6 @@
 [submodule "src/eslint"]
 	path = src/eslint
 	url = https://github.com/Kronuz/eslint.git
+[submodule "src/eslint-language-service"]
+	path = src/eslint-language-service
+	url = https://github.com/Kronuz/eslint-language-service.git
