@@ -36,9 +36,9 @@ class LspTypeScriptClientConfig(ClientConfig):
                 "scopes": ["source.ts", "source.tsx"],
                 "syntaxes": ["typescript"],
             },
-            "javacript": {
+            "javascript": {
                 "scopes": ["source.js", "source.jsx"],
-                "syntaxes": ["javacript"],
+                "syntaxes": ["javascript"],
             },
         }
         self.enabled = True
