@@ -23,7 +23,7 @@
     "source-map-support": "^0.5.6",
     "tslint": "file:tslint",
     "tslint-language-service": "file:tslint-language-service",
-    "typescript": "2.8.1",
+    "typescript": "3.0.1",
     "vscode-css-languageserver": "file:vscode-css-languageserver",
     "vscode-html-languageserver": "file:vscode-html-languageserver",
     "vscode-json-languageserver": "^1.0.1",
